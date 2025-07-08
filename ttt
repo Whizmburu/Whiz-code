@@ -1,126 +1,93 @@
-Its not even generating the codeit says
-Failed to request pairing code for 254754783683. Connection Closed in browser and 
 
-Microsoft Windows [Version 10.0.26100.4484]
-(c) Microsoft Corporation. All rights reserved.
+C:\Users\JOSPHAT MBURU\Desktop\qr>npm install
 
-C:\Users\JOSPHAT MBURU>cd desktop/pair & npm start
+added 299 packages, and audited 300 packages in 5m
 
-> whiz-md-pairing-app@1.0.0 start
-> node index.js
+64 packages are looking for funding
+  run `npm fund` for details
 
-[SessionManager] Running startup/periodic session cleanup...
-[SessionManager] Session cleanup check complete.
-[SessionManager] Scheduling periodic session cleanup every 6 hours (21600000 ms).
-WHIZ-MD Pairing Server listening on port 3000
-Open http://localhost:3000 in your browser.
-[2025-07-08T13:36:11.872Z] /pair: Request for 254740841168 received
-[2025-07-08T13:36:11.873Z] /pair: Calling connectToWhatsApp for 254740841168
-[2025-07-08T13:36:11.875Z] connectToWhatsApp: Starting for 254740841168
-[2025-07-08T13:36:11.877Z] connectToWhatsApp: Session directory prepared for 254740841168
-[2025-07-08T13:36:12.008Z] connectToWhatsApp: Auth state loaded for 254740841168
-[connectToWhatsApp for 254740841168] Socket config:  {"browser":["WHIZ-MD-WEBPAIR","Chrome","1.0.0"],"shouldIgnoreJid":"function","auth":"object","logger":"object"}
-[2025-07-08T13:36:12.192Z] connectToWhatsApp: Socket created for 254740841168
-[2025-07-08T13:36:12.193Z] connectToWhatsApp: Requesting pairing code for 254740841168 (formatted: 254740841168)
-[Socket for 254740841168] Connection Update: {"connection":"connecting","receivedPendingNotifications":false}
-[connectToWhatsApp for 254740841168] Failed to request pairing code: Error: Connection Closed
-    at sendRawMessage (C:\Users\JOSPHAT MBURU\Desktop\PAIR\node_modules\@whiskeysockets\baileys\lib\Socket\socket.js:60:19)
-    at sendNode (C:\Users\JOSPHAT MBURU\Desktop\PAIR\node_modules\@whiskeysockets\baileys\lib\Socket\socket.js:79:16)
-    at Object.requestPairingCode (C:\Users\JOSPHAT MBURU\Desktop\PAIR\node_modules\@whiskeysockets\baileys\lib\Socket\socket.js:375:15)
-    at async C:\Users\JOSPHAT MBURU\Desktop\PAIR\index.js:174:30 {
-  data: null,
-  isBoom: true,
-  isServer: false,
-  output: {
-    statusCode: 428,
-    payload: {
-      statusCode: 428,
-      error: 'Precondition Required',
-      message: 'Connection Closed'
-    },
-    headers: {}
-  }
-}
-[2025-07-08T13:36:12.495Z] /pair: Error processing for 254740841168: Failed to request pairing code for 254740841168. Connection Closed
-[2025-07-08T13:36:12.495Z] /pair: Sending error response to client for 254740841168.
-[2025-07-08T13:36:12.499Z] /pair: Triggering cleanup for failed attempt with 254740841168.
-[Cleanup for 254740841168] Attempting cleanup. Session path: C:\Users\JOSPHAT MBURU\Desktop\PAIR\sessions_WHIZ-MD\session-254740841168
-[Cleanup for 254740841168] Closing and nullifying active sockInstance for 254740841168.
-[Cleanup for 254740841168] Error during sockInstance.logout(): Error: Connection Closed
-    at sendRawMessage (C:\Users\JOSPHAT MBURU\Desktop\PAIR\node_modules\@whiskeysockets\baileys\lib\Socket\socket.js:60:19)
-    at sendNode (C:\Users\JOSPHAT MBURU\Desktop\PAIR\node_modules\@whiskeysockets\baileys\lib\Socket\socket.js:79:16)
-    at Object.logout (C:\Users\JOSPHAT MBURU\Desktop\PAIR\node_modules\@whiskeysockets\baileys\lib\Socket\socket.js:347:19)
-    at cleanupSpecificSession (C:\Users\JOSPHAT MBURU\Desktop\PAIR\index.js:41:32)
-    at C:\Users\JOSPHAT MBURU\Desktop\PAIR\index.js:307:15 {
-  data: null,
-  isBoom: true,
-  isServer: false,
-  output: {
-    statusCode: 428,
-    payload: {
-      statusCode: 428,
-      error: 'Precondition Required',
-      message: 'Connection Closed'
-    },
-    headers: {}
-  }
-}
-[Cleanup for 254740841168] Global sockInstance variables reset.
-[Cleanup for 254740841168] Session folder 'C:\Users\JOSPHAT MBURU\Desktop\PAIR\sessions_WHIZ-MD\session-254740841168' deleted.
-[2025-07-08T13:36:12.511Z] /pair: Request for 254740841168 failed and cleanup attempted.
-[2025-07-08T13:36:39.803Z] /pair: Request for 254754783683 received
-[2025-07-08T13:36:39.805Z] /pair: Calling connectToWhatsApp for 254754783683
-[2025-07-08T13:36:39.805Z] connectToWhatsApp: Starting for 254754783683
-[2025-07-08T13:36:39.807Z] connectToWhatsApp: Session directory prepared for 254754783683
-[2025-07-08T13:36:39.838Z] connectToWhatsApp: Auth state loaded for 254754783683
-[connectToWhatsApp for 254754783683] Socket config:  {"browser":["WHIZ-MD-WEBPAIR","Chrome","1.0.0"],"shouldIgnoreJid":"function","auth":"object","logger":"object"}
-[2025-07-08T13:36:39.847Z] connectToWhatsApp: Socket created for 254754783683
-[2025-07-08T13:36:39.847Z] connectToWhatsApp: Requesting pairing code for 254754783683 (formatted: 254754783683)
-[Socket for 254754783683] Connection Update: {"connection":"connecting","receivedPendingNotifications":false}
-[connectToWhatsApp for 254754783683] Failed to request pairing code: Error: Connection Closed
-    at sendRawMessage (C:\Users\JOSPHAT MBURU\Desktop\PAIR\node_modules\@whiskeysockets\baileys\lib\Socket\socket.js:60:19)
-    at sendNode (C:\Users\JOSPHAT MBURU\Desktop\PAIR\node_modules\@whiskeysockets\baileys\lib\Socket\socket.js:79:16)
-    at Object.requestPairingCode (C:\Users\JOSPHAT MBURU\Desktop\PAIR\node_modules\@whiskeysockets\baileys\lib\Socket\socket.js:375:15)
-    at async C:\Users\JOSPHAT MBURU\Desktop\PAIR\index.js:174:30 {
-  data: null,
-  isBoom: true,
-  isServer: false,
-  output: {
-    statusCode: 428,
-    payload: {
-      statusCode: 428,
-      error: 'Precondition Required',
-      message: 'Connection Closed'
-    },
-    headers: {}
-  }
-}
-[2025-07-08T13:36:40.130Z] /pair: Error processing for 254754783683: Failed to request pairing code for 254754783683. Connection Closed
-[2025-07-08T13:36:40.130Z] /pair: Sending error response to client for 254754783683.
-[2025-07-08T13:36:40.131Z] /pair: Triggering cleanup for failed attempt with 254754783683.
-[Cleanup for 254754783683] Attempting cleanup. Session path: C:\Users\JOSPHAT MBURU\Desktop\PAIR\sessions_WHIZ-MD\session-254754783683
-[Cleanup for 254754783683] Closing and nullifying active sockInstance for 254754783683.
-[Cleanup for 254754783683] Error during sockInstance.logout(): Error: Connection Closed
-    at sendRawMessage (C:\Users\JOSPHAT MBURU\Desktop\PAIR\node_modules\@whiskeysockets\baileys\lib\Socket\socket.js:60:19)
-    at sendNode (C:\Users\JOSPHAT MBURU\Desktop\PAIR\node_modules\@whiskeysockets\baileys\lib\Socket\socket.js:79:16)
-    at Object.logout (C:\Users\JOSPHAT MBURU\Desktop\PAIR\node_modules\@whiskeysockets\baileys\lib\Socket\socket.js:347:19)
-    at cleanupSpecificSession (C:\Users\JOSPHAT MBURU\Desktop\PAIR\index.js:41:32)
-    at C:\Users\JOSPHAT MBURU\Desktop\PAIR\index.js:307:15 {
-  data: null,
-  isBoom: true,
-  isServer: false,
-  output: {
-    statusCode: 428,
-    payload: {
-      statusCode: 428,
-      error: 'Precondition Required',
-      message: 'Connection Closed'
-    },
-    headers: {}
-  }
-}
-[Cleanup for 254754783683] Global sockInstance variables reset.
-[Cleanup for 254754783683] Session folder 'C:\Users\JOSPHAT MBURU\Desktop\PAIR\sessions_WHIZ-MD\session-254754783683' deleted.
-[2025-07-08T13:36:40.142Z] /pair: Request for 254754783683 failed and cleanup attempted.
+found 0 vulnerabilities
 
-on the cmd
+C:\Users\JOSPHAT MBURU\Desktop\qr>npm start
+
+> whiz-md-qr@1.0.0 start
+> node src/server.js
+
+WHIZ-MD QR Generator server running on http://localhost:3000
+No persistent session file found. Starting fresh.
+Persistent session metadata loaded. Server ready.
+Request for new QR. Generating temporary session ID: qr_737b0b0b0583106d at path: baileys_temp_qr_sessions\qr_737b0b0b0583106d
+Initiating WhatsApp connection for session: qr_737b0b0b0583106d, path: baileys_temp_qr_sessions\qr_737b0b0b0583106d, temporary: true
+QR code received for temporary session qr_737b0b0b0583106d
+QR generated for session qr_737b0b0b0583106d, sending to client.
+Request for new QR. Generating temporary session ID: qr_918ce82cde6f3062 at path: baileys_temp_qr_sessions\qr_918ce82cde6f3062
+Initiating WhatsApp connection for session: qr_918ce82cde6f3062, path: baileys_temp_qr_sessions\qr_918ce82cde6f3062, temporary: true
+QR code received for temporary session qr_918ce82cde6f3062
+QR generated for session qr_918ce82cde6f3062, sending to client.
+Connection closed for session qr_918ce82cde6f3062 (type: QR). Reason: "Stream Errored (restart required)"
+Temporary QR session qr_918ce82cde6f3062 connection closed prematurely or with error. Status: 'closed_early_error'. Reason: Stream Errored (restart required). Cleanup deferred.
+Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
+Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
+Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
+Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
+Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
+Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
+Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
+Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
+Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
+Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
+Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
+QR code received for temporary session qr_737b0b0b0583106d
+Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
+Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
+Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
+Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
+Master timeout for temp QR session qr_737b0b0b0583106d (status: qr_received). Cleaning up as it was not successfully processed.
+Cleaning up session: qr_737b0b0b0583106d at path: baileys_temp_qr_sessions\qr_737b0b0b0583106d
+Socket for session qr_737b0b0b0583106d already closed or not connected, skipping logout.
+Removed auth directory: baileys_temp_qr_sessions\qr_737b0b0b0583106d
+Removed session qr_737b0b0b0583106d from qrSessions map.
+Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
+No session data for qr_737b0b0b0583106d (type: QR) in connection.update. Might be cleaned up.
+Master timeout for temp QR session qr_918ce82cde6f3062 (status: closed_early_error). Cleaning up as it was not successfully processed.
+Cleaning up session: qr_918ce82cde6f3062 at path: baileys_temp_qr_sessions\qr_918ce82cde6f3062
+Socket for session qr_918ce82cde6f3062 already closed or not connected, skipping logout.
+Removed auth directory: baileys_temp_qr_sessions\qr_918ce82cde6f3062
+Removed session qr_918ce82cde6f3062 from qrSessions map.
+No session data for qr_737b0b0b0583106d (type: QR) in connection.update. Might be cleaned up.
+No session data for qr_737b0b0b0583106d (type: QR) in connection.update. Might be cleaned up.
+Request for new QR. Generating temporary session ID: qr_39590dd3d45cd3d4 at path: baileys_temp_qr_sessions\qr_39590dd3d45cd3d4
+Initiating WhatsApp connection for session: qr_39590dd3d45cd3d4, path: baileys_temp_qr_sessions\qr_39590dd3d45cd3d4, temporary: true
+QR code received for temporary session qr_39590dd3d45cd3d4
+QR generated for session qr_39590dd3d45cd3d4, sending to client.
+Connection closed for session qr_39590dd3d45cd3d4 (type: QR). Reason: "Stream Errored (restart required)"
+Temporary QR session qr_39590dd3d45cd3d4 connection closed prematurely or with error. Status: 'closed_early_error'. Reason: Stream Errored (restart required). Cleanup deferred.
+Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
+Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
+No session data for qr_737b0b0b0583106d (type: QR) in connection.update. Might be cleaned up.
+Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
+Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
+Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
+Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
+Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
+Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
+No session data for qr_737b0b0b0583106d (type: QR) in connection.update. Might be cleaned up.
+Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
+Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
+Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
+Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
+Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
+Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
+Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
+Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
+Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
+Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
+Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
+Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
+Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
+Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
+Master timeout for temp QR session qr_39590dd3d45cd3d4 (status: closed_early_error). Cleaning up as it was not successfully processed.
+Cleaning up session: qr_39590dd3d45cd3d4 at path: baileys_temp_qr_sessions\qr_39590dd3d45cd3d4
+Socket for session qr_39590dd3d45cd3d4 already closed or not connected, skipping logout.
+Removed auth directory: baileys_temp_qr_sessions\qr_39590dd3d45cd3d4
+Removed session qr_39590dd3d45cd3d4 from qrSessions map.
