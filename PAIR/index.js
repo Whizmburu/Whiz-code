@@ -29,115 +29,197 @@ if (!fs.existsSync(SESSIONS_DIR)) {
 }
 
 // This function cleans up a specific session path and the global sockInstance IF it's tied to that session.
+// The `isRetry` parameter is removed as its specific logic path was too similar to general cleanup.
 async function cleanupSpecificSession(sessionPathToClean, associatedPhoneNumber) {
-    console.log(chalk.yellow(`Attempting cleanup for session path: ${sessionPathToClean} (associated with ${associatedPhoneNumber || 'unknown'})`));
+    const logPrefix = `[Cleanup for ${associatedPhoneNumber || 'unknown'}]`;
+    console.log(chalk.yellow(`${logPrefix} Attempting cleanup. Session path: ${sessionPathToClean}`));
 
+    // Only attempt to close sockInstance if it's associated with the provided phoneNumber
     if (sockInstance && currentSessionPhoneNumberForSocket === associatedPhoneNumber) {
-        console.log(chalk.yellow(`Closing and nullifying active sockInstance for ${associatedPhoneNumber}.`));
+        console.log(chalk.yellow(`${logPrefix} Closing and nullifying active sockInstance for ${associatedPhoneNumber}.`));
         try {
-            await sockInstance.logout();
-            sockInstance.ws.close();
+            await sockInstance.logout(); // logout will also close the ws
         } catch (e) {
-            console.error(chalk.red('Error during sock logout/close:'), e);
+            // Log error but continue, as we still want to clean files and reset globals.
+            console.error(chalk.red(`${logPrefix} Error during sockInstance.logout():`), e);
+        }
+        // Check if ws is still open and try to close if necessary (logout should handle this)
+        if (sockInstance && sockInstance.ws && sockInstance.ws.readyState !== sockInstance.ws.CLOSED) {
+            try {
+                sockInstance.ws.close();
+                 console.log(chalk.yellow(`${logPrefix} WebSocket explicitly closed.`));
+            } catch (wsCloseError) {
+                console.error(chalk.red(`${logPrefix} Error during sockInstance.ws.close():`), wsCloseError);
+            }
         }
         sockInstance = null;
+        // pairingCodePromise is now managed more locally within connectToWhatsApp's scope for resolution/rejection.
+        // Setting it to null here ensures that if a cleanup happens due to an external factor (like /reset-pairing),
+        // any lingering global promise is cleared.
         pairingCodePromise = null;
         currentSessionPhoneNumberForSocket = null;
-    } else if (sockInstance && !associatedPhoneNumber && !sessionPathToClean) {
-        // Generic cleanup of a lingering sockInstance if no specific session is targeted
-        console.log(chalk.yellow(`Closing and nullifying lingering sockInstance (number unknown).`));
-         try {
-            await sockInstance.logout();
-            sockInstance.ws.close();
-        } catch (e) { /* Ignore */ }
-        sockInstance = null;
-        pairingCodePromise = null;
-        currentSessionPhoneNumberForSocket = null;
+        console.log(chalk.yellow(`${logPrefix} Global sockInstance variables reset.`));
+    } else if (sockInstance && currentSessionPhoneNumberForSocket !== associatedPhoneNumber) {
+        console.log(chalk.yellow(`${logPrefix} Skipping sockInstance closure: current instance is for ${currentSessionPhoneNumberForSocket}, not ${associatedPhoneNumber}.`));
+    } else if (!sockInstance) {
+        console.log(chalk.yellow(`${logPrefix} No active sockInstance to close.`));
     }
 
     if (sessionPathToClean && fs.existsSync(sessionPathToClean)) {
         try {
             await fs.remove(sessionPathToClean);
-            console.log(chalk.yellow(`Session folder '${sessionPathToClean}' deleted.`));
+            console.log(chalk.yellow(`${logPrefix} Session folder '${sessionPathToClean}' deleted.`));
         } catch (rmError) {
-            console.error(chalk.red(`Error deleting session folder '${sessionPathToClean}':`), rmError);
+            console.error(chalk.red(`${logPrefix} Error deleting session folder '${sessionPathToClean}':`), rmError);
         }
+    } else if (sessionPathToClean) {
+        console.log(chalk.yellow(`${logPrefix} Session folder '${sessionPathToClean}' not found, skipping delete.`));
     }
 }
 
 
-async function connectToWhatsApp(phoneNumber, res) { // phoneNumber is the number for THIS specific attempt
-    const sessionID = `session-${phoneNumber}`;
+async function connectToWhatsApp(phoneNumber, res) { // `res` is passed for early exit on header sent, not ideal but part of existing structure
+    const phoneNumberForThisAttempt = phoneNumber;
+    console.log(chalk.cyan(`[${new Date().toISOString()}] connectToWhatsApp: Starting for ${phoneNumberForThisAttempt}`));
+
+    const sessionID = `session-${phoneNumberForThisAttempt}`;
     const currentAttemptSessionPath = path.join(SESSIONS_DIR, sessionID);
 
-    // Pre-cleanup for the current attempt's path, in case of retries for the exact same number
+    // If a sockInstance for the *same* number is active, clean it up first.
+    if (sockInstance && currentSessionPhoneNumberForSocket === phoneNumberForThisAttempt) {
+        console.log(chalk.yellow(`[connectToWhatsApp for ${phoneNumberForThisAttempt}] Found existing sockInstance for the same number. Cleaning it up first.`));
+        await cleanupSpecificSession(currentAttemptSessionPath, phoneNumberForThisAttempt);
+    } else if (sockInstance && currentSessionPhoneNumberForSocket !== phoneNumberForThisAttempt) {
+        console.log(chalk.yellow(`[connectToWhatsApp for ${phoneNumberForThisAttempt}] An active sockInstance exists for a different number (${currentSessionPhoneNumberForSocket}). It will be replaced.`));
+        // The old sockInstance for the *different* number will be effectively orphaned when `sockInstance` is reassigned.
+        // We are primarily concerned with cleaning up session files and socket for the *current* number.
+    }
+
+    // Clean or create the session directory for the current attempt.
     if (fs.existsSync(currentAttemptSessionPath)) {
-        console.log(chalk.yellow(`Pre-cleaning session path for current attempt: ${currentAttemptSessionPath}`));
+        console.log(chalk.yellow(`[connectToWhatsApp for ${phoneNumberForThisAttempt}] Removing existing session directory: ${currentAttemptSessionPath}`));
         await fs.remove(currentAttemptSessionPath);
     }
     fs.mkdirSync(currentAttemptSessionPath, { recursive: true });
+    console.log(chalk.cyan(`[${new Date().toISOString()}] connectToWhatsApp: Session directory prepared for ${phoneNumberForThisAttempt}`));
 
-    const { state, saveCreds } = await useMultiFileAuthState(currentAttemptSessionPath);
+    const { state, saveCreds: originalSaveCreds } = await useMultiFileAuthState(currentAttemptSessionPath);
+    console.log(chalk.cyan(`[${new Date().toISOString()}] connectToWhatsApp: Auth state loaded for ${phoneNumberForThisAttempt}`));
 
-    // Assign to global sockInstance and track its associated number
-    sockInstance = makeWASocket({
+    const augmentedSaveCreds = async () => {
+        await originalSaveCreds();
+        try {
+            const lastActiveFilePath = path.join(currentAttemptSessionPath, 'lastActive.json');
+            let createdAt = state.creds.registrationTime ? new Date(state.creds.registrationTime).toISOString() : new Date().toISOString();
+
+            // Attempt to read existing createdAt if file exists, to preserve original creation time
+            if (fs.existsSync(lastActiveFilePath)) {
+                try {
+                    const existingData = await fs.readJson(lastActiveFilePath);
+                    if (existingData.createdAt) {
+                        createdAt = existingData.createdAt;
+                    }
+                } catch (readErr) {
+                    // Ignore if reading fails, will use new/registrationTime
+                }
+            }
+
+            const activityData = {
+                lastActive: new Date().toISOString(),
+                createdAt: createdAt // Store or preserve creation time
+            };
+            await fs.writeJson(lastActiveFilePath, activityData);
+            // console.log(chalk.blueBright(`[connectToWhatsApp for ${phoneNumberForThisAttempt}] Updated lastActive.json in ${currentAttemptSessionPath}`));
+        } catch (err) {
+            console.error(chalk.red(`[connectToWhatsApp for ${phoneNumberForThisAttempt}] Error writing lastActive.json for path ${currentAttemptSessionPath}:`), err);
+        }
+    };
+
+    const newSockInstance = makeWASocket({
         logger: pino({ level: 'silent' }),
         printQRInTerminal: false,
         browser: ["WHIZ-MD-WEBPAIR", "Chrome", "1.0.0"],
-        auth: state,
+        auth: { ...state, saveCreds: augmentedSaveCreds }, // Use augmented saveCreds
+        shouldIgnoreJid: jid => jid?.endsWith('@broadcast'),
     });
-    currentSessionPhoneNumberForSocket = phoneNumber; // Track which number this sockInstance is for
+    console.log(chalk.cyan(`[${new Date().toISOString()}] connectToWhatsApp: Socket created for ${phoneNumberForThisAttempt}`));
 
-    pairingCodePromise = new Promise(async (resolve, reject) => {
-        if (!sockInstance.authState.creds.registered) {
-            const formattedNumber = phoneNumber.replace(/[^0-9]/g, '');
-            console.log(chalk.yellow(`Requesting pairing code for: ${formattedNumber}`));
+    // Critical: Update global instance and associated number *immediately* after creation.
+    sockInstance = newSockInstance;
+    currentSessionPhoneNumberForSocket = phoneNumberForThisAttempt;
+
+    // This promise is specific to this call of connectToWhatsApp.
+    // The global `pairingCodePromise` will point to this new promise.
+    const localPairingCodePromise = new Promise(async (resolve, reject) => {
+        if (res.headersSent) {
+            return reject(new Error("Headers already sent, cannot process pairing code."));
+        }
+        if (!newSockInstance.authState.creds.registered) {
+            const formattedNumber = phoneNumberForThisAttempt.replace(/[^0-9]/g, '');
+            console.log(chalk.cyan(`[${new Date().toISOString()}] connectToWhatsApp: Requesting pairing code for ${phoneNumberForThisAttempt} (formatted: ${formattedNumber})`));
             try {
-                const code = await sockInstance.requestPairingCode(formattedNumber);
-                console.log(chalk.green(`Pairing Code for ${formattedNumber}: ${code}`));
+                // Before requesting pairing code, ensure initial lastActive.json is written with createdAt
+                await augmentedSaveCreds(); // This will save initial creds and our activity file
+
+                const code = await newSockInstance.requestPairingCode(formattedNumber);
+                console.log(chalk.green(`[connectToWhatsApp for ${phoneNumberForThisAttempt}] Pairing Code: ${code}`));
+                console.log(chalk.cyan(`[${new Date().toISOString()}] connectToWhatsApp: Pairing code ${code} received for ${phoneNumberForThisAttempt}`));
                 resolve(code);
             } catch (error) {
-                console.error(chalk.red(`Failed to request pairing code for ${formattedNumber}:`), error);
-                reject(new Error('Failed to request pairing code.'));
+                console.error(chalk.red(`[connectToWhatsApp for ${phoneNumberForThisAttempt}] Failed to request pairing code:`), error);
+                reject(new Error(`Failed to request pairing code for ${phoneNumberForThisAttempt}. ${error.message || ""}`));
             }
         } else {
-            console.log(chalk.yellow(`Socket for ${phoneNumber} is already registered (unexpected).`));
+            console.log(chalk.yellow(`[connectToWhatsApp for ${phoneNumberForThisAttempt}] Socket is already registered (unexpected).`));
             reject(new Error('Device already registered or session issue. Please try /reset-pairing.'));
         }
     });
+    pairingCodePromise = localPairingCodePromise;
 
-    sockInstance.ev.on('connection.update', async (update) => {
+    newSockInstance.ev.on('connection.update', async (update) => {
         const { connection, lastDisconnect } = update;
-        const logIdentifier = `Socket for ${phoneNumber}`; // Use the number this socket was created for
+        const logIdentifier = `[Socket for ${phoneNumberForThisAttempt}]`;
+
+        if (sockInstance !== newSockInstance) {
+            return;
+        }
 
         if (connection === 'open') {
-            console.log(chalk.green(`WhatsApp connection opened for ${logIdentifier}!`));
+            console.log(chalk.green(`${logIdentifier} WhatsApp connection opened!`));
+            // Update activity on successful connection opening
+            await augmentedSaveCreds();
         } else if (connection === 'close') {
+            const statusCode = lastDisconnect?.error?.output?.statusCode;
             console.log(
-                chalk.red(`Connection closed for ${logIdentifier} due to:`),
+                chalk.red(`${logIdentifier} Connection closed due to:`),
                 lastDisconnect?.error,
-                chalk.yellow(', Status Code:'), lastDisconnect?.error?.output?.statusCode
+                chalk.yellow(', Status Code:'), statusCode
             );
 
-            // If this specific socket's pairing promise is still pending and connection closed, reject it.
-            if (pairingCodePromise && sockInstance && currentSessionPhoneNumberForSocket === phoneNumber && !res.headersSent) {
-                try {
-                    const pairingPromiseRef = pairingCodePromise; // Avoid race condition if it gets nulled
-                    pairingCodePromise = null; // Nullify to prevent re-rejection
-                    pairingPromiseRef.reject(new Error(`Connection closed: ${lastDisconnect?.error?.message || 'Unknown reason'}`));
-                    console.log(chalk.yellow(`Pairing promise rejected for ${logIdentifier} due to connection close.`));
-                } catch(e) { console.warn("Error rejecting pairing code promise on close:", e)}
-            }
-
-            // Clean up the session for THIS specific socket instance if it's the one that closed
-            if (currentSessionPhoneNumberForSocket === phoneNumber) {
-                 await cleanupSpecificSession(currentAttemptSessionPath, phoneNumber);
+            if (currentSessionPhoneNumberForSocket === phoneNumberForThisAttempt) {
+                if (pairingCodePromise === localPairingCodePromise && !res.headersSent) {
+                    try {
+                        console.log(chalk.yellow(`${logIdentifier} Connection closed, attempting to reject its pairing promise.`));
+                        localPairingCodePromise.reject(new Error(`Connection closed: ${lastDisconnect?.error?.message || 'Unknown reason'}`));
+                        console.log(chalk.yellow(`${logIdentifier} Pairing promise rejected due to connection close.`));
+                        if (pairingCodePromise === localPairingCodePromise) {
+                            pairingCodePromise = null;
+                        }
+                    } catch(e) {
+                        console.warn(`${logIdentifier} Error rejecting pairing code promise on close (possibly already settled):`, e.message);
+                    }
+                }
+                console.log(chalk.yellow(`${logIdentifier} Connection closed. Triggering cleanup for this session.`));
+                await cleanupSpecificSession(currentAttemptSessionPath, phoneNumberForThisAttempt);
+            } else {
+                 console.log(chalk.yellow(`${logIdentifier} Connection closed, but current global context is for ${currentSessionPhoneNumberForSocket}. Cleanup deferred or handled by its own context.`));
             }
         }
     });
 
-    sockInstance.ev.on('creds.update', saveCreds);
-    return sockInstance; // Though the global sockInstance is now set
+    // The 'creds.update' event will now trigger our augmentedSaveCreds
+    newSockInstance.ev.on('creds.update', augmentedSaveCreds);
+    return localPairingCodePromise;
 }
 
 app.post('/pair', async (req, res) => {
@@ -145,38 +227,43 @@ app.post('/pair', async (req, res) => {
     if (!phoneNumber) {
         return res.status(400).json({ error: 'Phone number is required.' });
     }
-    console.log(chalk.blue(`Received pairing request for: ${phoneNumber}`));
+    console.log(chalk.cyan(`[${new Date().toISOString()}] /pair: Request for ${phoneNumber} received`));
 
-    // Force cleanup of any existing global sockInstance and its *tracked* session folder.
-    // This ensures we are starting fresh for any new /pair request.
-    if (sockInstance) {
-        const pathToDelete = currentSessionPhoneNumberForSocket ? path.join(SESSIONS_DIR, `session-${currentSessionPhoneNumberForSocket}`) : null;
-        console.log(chalk.yellow(`New pairing request. Cleaning up previous sockInstance (if any) for ${currentSessionPhoneNumberForSocket || 'unknown'}...`));
-        await cleanupSpecificSession(pathToDelete, currentSessionPhoneNumberForSocket);
+    // Logging existing socket state. Aggressive cleanup before connectToWhatsApp is removed.
+    // connectToWhatsApp will handle cleanup if it finds an existing session for the *same* number.
+    if (sockInstance && currentSessionPhoneNumberForSocket && currentSessionPhoneNumberForSocket !== phoneNumber) {
+        console.log(chalk.yellow(`[${new Date().toISOString()}] /pair: An active sockInstance for a different number (${currentSessionPhoneNumberForSocket}) exists. A new instance for ${phoneNumber} will be created.`));
+    } else if (sockInstance && currentSessionPhoneNumberForSocket === phoneNumber) {
+        console.log(chalk.yellow(`[${new Date().toISOString()}] /pair: An active sockInstance for the same number (${phoneNumber}) exists. connectToWhatsApp will handle its cleanup and re-creation.`));
     }
-    // At this point, global sockInstance, currentSessionPhoneNumberForSocket, and pairingCodePromise are null.
 
     try {
-        await connectToWhatsApp(phoneNumber, res); // This will set the global sockInstance and currentSessionPhoneNumberForSocket
+        console.log(chalk.cyan(`[${new Date().toISOString()}] /pair: Calling connectToWhatsApp for ${phoneNumber}`));
+        const code = await connectToWhatsApp(phoneNumber, res); // This now returns the pairing code promise
+        console.log(chalk.cyan(`[${new Date().toISOString()}] /pair: connectToWhatsApp call returned for ${phoneNumber}`));
 
-        if (pairingCodePromise) {
-            const code = await pairingCodePromise;
-            if (!res.headersSent) {
-                res.json({ pairingCode: code });
-            }
-        } else {
-            if (!res.headersSent) { // Should have been rejected by connectToWhatsApp if error occurred
-                res.status(500).json({ error: 'Pairing code promise not resolved or initialized.' });
-            }
-        }
-    } catch (error) { // Catch errors from connectToWhatsApp or pairingCodePromise rejection
-        console.error(chalk.red(`Error in /pair processing for ${phoneNumber}:`), error);
         if (!res.headersSent) {
-            res.status(500).json({ error: error.message || 'Failed to initiate pairing.' });
+            console.log(chalk.cyan(`[${new Date().toISOString()}] /pair: Sending pairing code ${code} to client for ${phoneNumber}`));
+            res.json({ pairingCode: code });
+        } else {
+            console.log(chalk.yellow(`[${new Date().toISOString()}] /pair: Headers already sent for ${phoneNumber}, cannot send pairing code.`));
         }
-        // Ensure cleanup for the number that just failed, if a session path was being set up for it
+        console.log(chalk.cyan(`[${new Date().toISOString()}] /pair: Request for ${phoneNumber} completed successfully.`));
+
+    } catch (error) {
+        console.error(chalk.red(`[${new Date().toISOString()}] /pair: Error processing for ${phoneNumber}:`), error.message);
+        if (!res.headersSent) {
+            console.log(chalk.red(`[${new Date().toISOString()}] /pair: Sending error response to client for ${phoneNumber}.`));
+            res.status(500).json({ error: error.message || 'Failed to initiate pairing.' });
+        } else {
+            console.log(chalk.yellow(`[${new Date().toISOString()}] /pair: Headers already sent for ${phoneNumber}, cannot send error response.`));
+        }
+        // Cleanup for the failed attempt.
         const sessionPathForFailedAttempt = path.join(SESSIONS_DIR, `session-${phoneNumber}`);
+        console.log(chalk.red(`[${new Date().toISOString()}] /pair: Triggering cleanup for failed attempt with ${phoneNumber}.`));
+        // cleanupSpecificSession will only kill the socket if currentSessionPhoneNumberForSocket matches phoneNumber.
         await cleanupSpecificSession(sessionPathForFailedAttempt, phoneNumber);
+        console.log(chalk.cyan(`[${new Date().toISOString()}] /pair: Request for ${phoneNumber} failed and cleanup attempted.`));
     }
 });
 
@@ -247,24 +334,130 @@ _Keep the Session Id Safe to protect your Account_
 
 app.post('/reset-pairing', async (req, res) => {
     const { phoneNumber } = req.body;
-    if (phoneNumber && currentSessionPhoneNumber === phoneNumber) {
+    // Use currentSessionPhoneNumberForSocket for checking active session
+    if (phoneNumber && currentSessionPhoneNumberForSocket === phoneNumber) {
+        console.log(chalk.yellow(`[Reset] Request to reset specific pairing for: ${phoneNumber}`));
         const sessionPath = path.join(SESSIONS_DIR, `session-${phoneNumber}`);
-        await cleanupSession(sessionPath);
-        res.json({ message: `Pairing session for ${phoneNumber} reset.` });
-    } else if (currentSessionPhoneNumber) {
-        // Reset any active session if phone number doesn't match or not provided
-        const sessionPath = path.join(SESSIONS_DIR, `session-${currentSessionPhoneNumber}`);
-        await cleanupSession(sessionPath);
-        res.json({ message: `Active pairing session for ${currentSessionPhoneNumber} reset.` });
+        await cleanupSpecificSession(sessionPath, phoneNumber); // This will also handle the sockInstance
+        res.json({ message: `Pairing session for ${phoneNumber} reset successfully.` });
+    } else if (phoneNumber && currentSessionPhoneNumberForSocket !== phoneNumber) {
+        // A specific number is requested for reset, but it's not the currently active one (if any)
+        console.log(chalk.yellow(`[Reset] Request to reset session files for: ${phoneNumber} (not the active socket session).`));
+        const sessionPath = path.join(SESSIONS_DIR, `session-${phoneNumber}`);
+        await cleanupSpecificSession(sessionPath, phoneNumber); // Cleans files; won't kill current sockInstance if numbers differ
+        res.json({ message: `Session files for ${phoneNumber} (if any) reset. Active session for ${currentSessionPhoneNumberForSocket || 'none'} was not affected.` });
+    } else if (!phoneNumber && currentSessionPhoneNumberForSocket) {
+        // No specific number, reset the currently active session
+        console.log(chalk.yellow(`[Reset] Request to reset the current active pairing session for: ${currentSessionPhoneNumberForSocket}`));
+        const sessionPath = path.join(SESSIONS_DIR, `session-${currentSessionPhoneNumberForSocket}`);
+        await cleanupSpecificSession(sessionPath, currentSessionPhoneNumberForSocket);
+        res.json({ message: `Active pairing session for ${currentSessionPhoneNumberForSocket} reset successfully.` });
     } else {
-        res.json({ message: 'No active pairing session to reset.' });
+        console.log(chalk.yellow('[Reset] No active session to reset, or no specific number provided for inactive session cleanup.'));
+        res.json({ message: 'No active pairing session to reset, or no specific number provided that matches an active session or existing files.' });
     }
 });
 
+// --- Session Cleanup Logic ---
+// Read from config or use sensible defaults
+const sessionMinRetentionDays = config.sessionMinRetentionDays || 14;
+const sessionInactivityCleanupDays = config.sessionInactivityCleanupDays || 3;
+const sessionCleanupCheckIntervalHours = config.sessionCleanupCheckIntervalHours || 6;
 
-app.listen(PORT, () => {
-  console.log(chalk.bgGreen.black(`WHIZ-MD Pairing Server listening on port ${PORT}`));
-  console.log(chalk.blue(`Open http://localhost:${PORT} in your browser.`));
+const MIN_RETENTION_MILLISECONDS = sessionMinRetentionDays * 24 * 60 * 60 * 1000;
+const INACTIVITY_MILLISECONDS = sessionInactivityCleanupDays * 24 * 60 * 60 * 1000;
+const CLEANUP_INTERVAL_MILLISECONDS = sessionCleanupCheckIntervalHours * 60 * 60 * 1000;
+
+// For quick testing, uncomment these lines to override config:
+// const MIN_RETENTION_MILLISECONDS = 5 * 60 * 1000; // For testing: 5 minutes
+// const INACTIVITY_MILLISECONDS = 1 * 60 * 1000; // For testing: 1 minute
+// const CLEANUP_INTERVAL_MILLISECONDS = 2 * 60 * 1000; // For testing: 2 minutes
+
+
+async function checkAndCleanupOldSessions() {
+    console.log(chalk.magentaBright('[SessionManager] Running startup/periodic session cleanup...'));
+    if (!fs.existsSync(SESSIONS_DIR)) {
+        console.log(chalk.magentaBright('[SessionManager] Sessions directory does not exist. Nothing to clean.'));
+        return;
+    }
+
+    const sessionFolders = await fs.readdir(SESSIONS_DIR);
+    const now = new Date();
+
+    for (const folderName of sessionFolders) {
+        if (!folderName.startsWith('session-')) {
+            continue; // Skip non-session folders like .DS_Store or other files
+        }
+
+        const sessionPath = path.join(SESSIONS_DIR, folderName);
+        const lastActivePath = path.join(sessionPath, 'lastActive.json');
+        const phoneNumber = folderName.substring('session-'.length); // Extract phone number
+
+        // Safety check: do not delete the session of the currently active socket
+        if (sockInstance && currentSessionPhoneNumberForSocket === phoneNumber) {
+            console.log(chalk.magentaBright(`[SessionManager] Session for ${phoneNumber} is currently active. Skipping cleanup check for it.`));
+            continue;
+        }
+
+        try {
+            const stats = await fs.stat(sessionPath); // Get directory stats for a fallback creation time
+            let createdAt, lastActive;
+
+            if (fs.existsSync(lastActivePath)) {
+                const activityData = await fs.readJson(lastActivePath);
+                createdAt = new Date(activityData.createdAt || stats.birthtimeMs); // Prefer createdAt from json, fallback to dir birthtime
+                lastActive = new Date(activityData.lastActive);
+            } else {
+                // If lastActive.json is missing, use directory modification time as last active and birthtime as created.
+                // This session might be very old or partially formed.
+                console.warn(chalk.yellow(`[SessionManager] lastActive.json missing for session ${folderName}. Using directory timestamps.`));
+                createdAt = new Date(stats.birthtimeMs);
+                lastActive = new Date(stats.mtimeMs);
+            }
+
+            const retentionEndTime = new Date(createdAt.getTime() + MIN_RETENTION_MILLISECONDS);
+            const inactivityDeadline = new Date(lastActive.getTime() + INACTIVITY_MILLISECONDS);
+
+            // console.log(chalk.gray(`[SessionManager] Checking ${folderName}: Created: ${createdAt.toISOString()}, LastActive: ${lastActive.toISOString()}, RetentionEnds: ${retentionEndTime.toISOString()}, InactivityDeadline: ${inactivityDeadline.toISOString()}`));
+
+            if (now > retentionEndTime && now > inactivityDeadline) {
+                console.log(chalk.magentaBright(`[SessionManager] Deleting stale session ${folderName}: Exceeded retention and inactivity period.`));
+                // cleanupSpecificSession also handles potential socket instance, though we explicitly skip active ones above.
+                await cleanupSpecificSession(sessionPath, phoneNumber);
+            } else if (now <= retentionEndTime) {
+                // console.log(chalk.gray(`[SessionManager] Session ${folderName} is within minimum retention period.`));
+            } else if (now <= inactivityDeadline) {
+                // console.log(chalk.gray(`[SessionManager] Session ${folderName} is within inactivity grace period.`));
+            }
+
+        } catch (err) {
+            console.error(chalk.red(`[SessionManager] Error processing session ${folderName}:`), err);
+            // Optionally, decide if a malformed session folder should be deleted
+            // For now, just log and continue.
+        }
+    }
+    console.log(chalk.magentaBright('[SessionManager] Session cleanup check complete.'));
+}
+
+
+// --- Server Initialization ---
+async function initializeServer() {
+    // Perform initial session cleanup on startup
+    await checkAndCleanupOldSessions();
+
+    // Setup periodic cleanup
+    console.log(chalk.magentaBright(`[SessionManager] Scheduling periodic session cleanup every ${sessionCleanupCheckIntervalHours} hours (${CLEANUP_INTERVAL_MILLISECONDS} ms).`));
+    setInterval(checkAndCleanupOldSessions, CLEANUP_INTERVAL_MILLISECONDS);
+
+    app.listen(PORT, () => {
+        console.log(chalk.bgGreen.black(`WHIZ-MD Pairing Server listening on port ${PORT}`));
+        console.log(chalk.blue(`Open http://localhost:${PORT} in your browser.`));
+    });
+}
+
+initializeServer().catch(err => {
+    console.error(chalk.redBright("Failed to initialize server:"), err);
+    process.exit(1);
 });
 
 let shuttingDown = false;

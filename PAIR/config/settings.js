@@ -22,7 +22,16 @@ module.exports = {
   // Bot display name (can be used for general identification if needed elsewhere)
   bot: {
     name: '𝐖𝐇𝐈𝐙-𝐌𝐃'
-  }
+  },
+
+  // Session Lifecycle Management (values in days)
+  // How long to keep sessions at a minimum, regardless of activity.
+  sessionMinRetentionDays: 14,
+  // After the minimum retention period, how many days of inactivity before a session is cleaned up.
+  sessionInactivityCleanupDays: 3,
+  // Interval for periodic cleanup check in hours (e.g., 6 means every 6 hours)
+  // For testing, you might temporarily set this to a much smaller value in index.js (e.g., for minutes)
+  sessionCleanupCheckIntervalHours: 6
 
   // Other settings from the original file have been removed as they are not
   // directly used by the current pairing-focused web application in index.js.
