@@ -135,13 +135,23 @@ async function connectToWhatsApp(phoneNumber, res) { // `res` is passed for earl
         }
     };
 
-    const newSockInstance = makeWASocket({
-        logger: pino({ level: 'silent' }),
-        printQRInTerminal: false,
+    const socketConfig = {
+        logger: pino({ level: 'silent' }), // Default to silent, can be overridden for debugging
+        printQRInTerminal: false, // Pairing code flow, so no QR needed in terminal
         browser: ["WHIZ-MD-WEBPAIR", "Chrome", "1.0.0"],
-        auth: { ...state, saveCreds: augmentedSaveCreds }, // Use augmented saveCreds
+        auth: { ...state, saveCreds: augmentedSaveCreds },
         shouldIgnoreJid: jid => jid?.endsWith('@broadcast'),
-    });
+        // Consider adding defaultQueryTimeoutMs if requests are timing out, e.g.
+        // defaultQueryTimeoutMs: 60000, // 60 seconds
+    };
+    console.log(chalk.blueBright(`[connectToWhatsApp for ${phoneNumberForThisAttempt}] Socket config: `, JSON.stringify({
+        browser: socketConfig.browser,
+        shouldIgnoreJid: "function", // Omit actual function from log
+        auth: "object", // Omit sensitive auth details
+        logger: "object" // Omit logger object
+    })));
+
+    const newSockInstance = makeWASocket(socketConfig);
     console.log(chalk.cyan(`[${new Date().toISOString()}] connectToWhatsApp: Socket created for ${phoneNumberForThisAttempt}`));
 
     // Critical: Update global instance and associated number *immediately* after creation.
@@ -177,42 +187,74 @@ async function connectToWhatsApp(phoneNumber, res) { // `res` is passed for earl
     pairingCodePromise = localPairingCodePromise;
 
     newSockInstance.ev.on('connection.update', async (update) => {
-        const { connection, lastDisconnect } = update;
+        const { connection, lastDisconnect, receivedPendingNotifications } = update;
         const logIdentifier = `[Socket for ${phoneNumberForThisAttempt}]`;
 
         if (sockInstance !== newSockInstance) {
+            // Event is for an old/orphaned socket
             return;
         }
 
+        console.log(chalk.blueBright(`${logIdentifier} Connection Update:`, JSON.stringify(update)));
+
+
         if (connection === 'open') {
-            console.log(chalk.green(`${logIdentifier} WhatsApp connection opened!`));
-            // Update activity on successful connection opening
-            await augmentedSaveCreds();
+            console.log(chalk.green(`${logIdentifier} WhatsApp connection opened! Pending notifications: ${receivedPendingNotifications}`));
+            await augmentedSaveCreds(); // Update activity
         } else if (connection === 'close') {
-            const statusCode = lastDisconnect?.error?.output?.statusCode;
+            const reason = lastDisconnect?.error;
+            const statusCode = reason?.output?.statusCode;
+            let shouldReconnect = true; // Default to true
+
             console.log(
-                chalk.red(`${logIdentifier} Connection closed due to:`),
-                lastDisconnect?.error,
+                chalk.red(`${logIdentifier} Connection closed. Reason: `), reason,
                 chalk.yellow(', Status Code:'), statusCode
             );
 
+            if (statusCode === DisconnectReason.loggedOut) {
+                console.log(chalk.redBright(`${logIdentifier} Device Logged Out, Do Not Reconnect. Cleaning up.`));
+                shouldReconnect = false;
+            } else if (statusCode === DisconnectReason.connectionClosed || statusCode === DisconnectReason.connectionLost || statusCode === DisconnectReason.timedOut) {
+                console.log(chalk.yellow(`${logIdentifier} Connection closed/lost/timed out. Baileys will attempt to reconnect if not logged out.`));
+                // Baileys handles these reconnections automatically if not a terminal state like loggedOut
+            } else if (statusCode === DisconnectReason.restartRequired) {
+                 console.log(chalk.redBright(`${logIdentifier} Restart Required. Cleaning up as Baileys might not recover this specific instance well for pairing.`));
+                 shouldReconnect = false; // For pairing flow, a restart required might mean the current attempt is dead.
+            } else if (statusCode === DisconnectReason.connectionReplaced) {
+                console.log(chalk.yellow(`${logIdentifier} Connection Replaced. Another connection was made. Cleaning up this instance.`));
+                shouldReconnect = false;
+            } else {
+                console.log(chalk.yellow(`${logIdentifier} Connection closed with unhandled status code ${statusCode}. Assuming Baileys will attempt reconnect or it's a terminal error.`));
+                // If it's an error that Baileys won't auto-retry from, and not loggedOut, it might be a problem.
+                // For pairing, most close events that aren't 'open' mean the pairing attempt for *this code* might be over.
+            }
+
+            // If the pairing promise for this attempt is still pending, reject it.
             if (currentSessionPhoneNumberForSocket === phoneNumberForThisAttempt) {
                 if (pairingCodePromise === localPairingCodePromise && !res.headersSent) {
                     try {
-                        console.log(chalk.yellow(`${logIdentifier} Connection closed, attempting to reject its pairing promise.`));
-                        localPairingCodePromise.reject(new Error(`Connection closed: ${lastDisconnect?.error?.message || 'Unknown reason'}`));
+                        console.log(chalk.yellow(`${logIdentifier} Connection closed, attempting to reject its pairing promise (if not already settled).`));
+                        localPairingCodePromise.reject(new Error(`Connection closed: ${reason?.message || 'Unknown reason'}`));
                         console.log(chalk.yellow(`${logIdentifier} Pairing promise rejected due to connection close.`));
-                        if (pairingCodePromise === localPairingCodePromise) {
+                        if (pairingCodePromise === localPairingCodePromise) { // Defensive nullification
                             pairingCodePromise = null;
                         }
-                    } catch(e) {
+                    } catch (e) {
                         console.warn(`${logIdentifier} Error rejecting pairing code promise on close (possibly already settled):`, e.message);
                     }
                 }
-                console.log(chalk.yellow(`${logIdentifier} Connection closed. Triggering cleanup for this session.`));
-                await cleanupSpecificSession(currentAttemptSessionPath, phoneNumberForThisAttempt);
+
+                // If the connection closure is definitive (like loggedOut, restartRequired for this flow, or replaced), clean up.
+                // For other transient errors, Baileys might be attempting reconnection.
+                // However, for a pairing code flow, any 'close' before pairing success usually means that attempt is over.
+                if (!shouldReconnect || (reason && reason.isBoom && reason.output.statusCode !== 428 && reason.output.statusCode !== DisconnectReason.timedOut) ) {
+                     console.log(chalk.yellow(`${logIdentifier} Definitive connection close or unrecoverable error for pairing. Triggering cleanup for this session.`));
+                    await cleanupSpecificSession(currentAttemptSessionPath, phoneNumberForThisAttempt);
+                } else {
+                    console.log(chalk.yellow(`${logIdentifier} Connection closed, but might be a temporary issue or Baileys is reconnecting. Cleanup might be handled by a new request or subsequent definitive closure.`));
+                }
             } else {
-                 console.log(chalk.yellow(`${logIdentifier} Connection closed, but current global context is for ${currentSessionPhoneNumberForSocket}. Cleanup deferred or handled by its own context.`));
+                console.log(chalk.yellow(`${logIdentifier} Connection closed, but current global context is for ${currentSessionPhoneNumberForSocket}. This instance (${phoneNumberForThisAttempt}) is likely orphaned. Its cleanup might have been handled or will be handled by session manager.`));
             }
         }
     });
