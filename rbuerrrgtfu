@@ -1,115 +1,27 @@
-C:\Users\JOSPHAT MBURU\Desktop\PAIR>npm start
-
-> whiz-md-pairing-app@1.0.0 start
-> node index.js
-
-[SessionManager] Running startup/periodic session cleanup...
-[SessionManager] Session cleanup check complete.
-[SessionManager] Scheduling periodic session cleanup every 6 hours (21600000 ms).
-WHIZ-MD Pairing Server listening on port 3000
-Open http://localhost:3000 in your browser.
-[2025-07-08T12:38:11.914Z] /pair: Request for 254754783683 received
-[2025-07-08T12:38:11.915Z] /pair: Calling connectToWhatsApp for 254754783683
-[2025-07-08T12:38:11.916Z] connectToWhatsApp: Starting for 254754783683
-[2025-07-08T12:38:11.917Z] connectToWhatsApp: Session directory prepared for 254754783683
-[2025-07-08T12:38:12.037Z] connectToWhatsApp: Auth state loaded for 254754783683
-[2025-07-08T12:38:12.169Z] connectToWhatsApp: Socket created for 254754783683
-[2025-07-08T12:38:12.170Z] connectToWhatsApp: Requesting pairing code for 254754783683 (formatted: 254754783683)
-[connectToWhatsApp for 254754783683] Failed to request pairing code: Error: Connection Closed
-    at sendRawMessage (C:\Users\JOSPHAT MBURU\Desktop\PAIR\node_modules\@whiskeysockets\baileys\lib\Socket\socket.js:60:19)
-    at sendNode (C:\Users\JOSPHAT MBURU\Desktop\PAIR\node_modules\@whiskeysockets\baileys\lib\Socket\socket.js:79:16)
-    at Object.requestPairingCode (C:\Users\JOSPHAT MBURU\Desktop\PAIR\node_modules\@whiskeysockets\baileys\lib\Socket\socket.js:375:15)
-    at async C:\Users\JOSPHAT MBURU\Desktop\PAIR\index.js:164:30 {
-  data: null,
-  isBoom: true,
-  isServer: false,
-  output: {
-    statusCode: 428,
-    payload: {
-      statusCode: 428,
-      error: 'Precondition Required',
-      message: 'Connection Closed'
-    },
-    headers: {}
-  }
+Require stack:
+- C:\Users\JOSPHAT MBURU\Desktop\bot\commands\help.js
+- C:\Users\JOSPHAT MBURU\Desktop\bot\commands\menu.js
+- C:\Users\JOSPHAT MBURU\Desktop\bot\bot.js
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1401:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
+    at Function._load (node:internal/modules/cjs/loader:1211:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.require (node:internal/modules/cjs/loader:1487:12)
+    at require (node:internal/modules/helpers:135:16)
+    at Object.<anonymous> (C:\Users\JOSPHAT MBURU\Desktop\bot\commands\help.js:63:15)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:1282:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.require (node:internal/modules/cjs/loader:1487:12) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\JOSPHAT MBURU\\Desktop\\bot\\commands\\help.js',
+    'C:\\Users\\JOSPHAT MBURU\\Desktop\\bot\\commands\\menu.js',
+    'C:\\Users\\JOSPHAT MBURU\\Desktop\\bot\\bot.js'
+  ]
 }
-[2025-07-08T12:38:12.425Z] /pair: Error processing for 254754783683: Failed to request pairing code for 254754783683. Connection Closed
-[2025-07-08T12:38:12.426Z] /pair: Sending error response to client for 254754783683.
-[2025-07-08T12:38:12.429Z] /pair: Triggering cleanup for failed attempt with 254754783683.
-[Cleanup for 254754783683] Attempting cleanup. Session path: C:\Users\JOSPHAT MBURU\Desktop\PAIR\sessions_WHIZ-MD\session-254754783683
-[Cleanup for 254754783683] Closing and nullifying active sockInstance for 254754783683.
-[Cleanup for 254754783683] Error during sockInstance.logout(): Error: Connection Closed
-    at sendRawMessage (C:\Users\JOSPHAT MBURU\Desktop\PAIR\node_modules\@whiskeysockets\baileys\lib\Socket\socket.js:60:19)
-    at sendNode (C:\Users\JOSPHAT MBURU\Desktop\PAIR\node_modules\@whiskeysockets\baileys\lib\Socket\socket.js:79:16)
-    at Object.logout (C:\Users\JOSPHAT MBURU\Desktop\PAIR\node_modules\@whiskeysockets\baileys\lib\Socket\socket.js:347:19)
-    at cleanupSpecificSession (C:\Users\JOSPHAT MBURU\Desktop\PAIR\index.js:41:32)
-    at C:\Users\JOSPHAT MBURU\Desktop\PAIR\index.js:265:15 {
-  data: null,
-  isBoom: true,
-  isServer: false,
-  output: {
-    statusCode: 428,
-    payload: {
-      statusCode: 428,
-      error: 'Precondition Required',
-      message: 'Connection Closed'
-    },
-    headers: {}
-  }
-}
-[Cleanup for 254754783683] Global sockInstance variables reset.
-[Cleanup for 254754783683] Session folder 'C:\Users\JOSPHAT MBURU\Desktop\PAIR\sessions_WHIZ-MD\session-254754783683' deleted.
-[2025-07-08T12:38:12.445Z] /pair: Request for 254754783683 failed and cleanup attempted.
-[2025-07-08T12:38:14.784Z] /pair: Request for 254754783683 received
-[2025-07-08T12:38:14.784Z] /pair: Calling connectToWhatsApp for 254754783683
-[2025-07-08T12:38:14.785Z] connectToWhatsApp: Starting for 254754783683
-[2025-07-08T12:38:14.787Z] connectToWhatsApp: Session directory prepared for 254754783683
-[2025-07-08T12:38:14.824Z] connectToWhatsApp: Auth state loaded for 254754783683
-[2025-07-08T12:38:14.837Z] connectToWhatsApp: Socket created for 254754783683
-[2025-07-08T12:38:14.837Z] connectToWhatsApp: Requesting pairing code for 254754783683 (formatted: 254754783683)
-[connectToWhatsApp for 254754783683] Failed to request pairing code: Error: Connection Closed
-    at sendRawMessage (C:\Users\JOSPHAT MBURU\Desktop\PAIR\node_modules\@whiskeysockets\baileys\lib\Socket\socket.js:60:19)
-    at sendNode (C:\Users\JOSPHAT MBURU\Desktop\PAIR\node_modules\@whiskeysockets\baileys\lib\Socket\socket.js:79:16)
-    at Object.requestPairingCode (C:\Users\JOSPHAT MBURU\Desktop\PAIR\node_modules\@whiskeysockets\baileys\lib\Socket\socket.js:375:15)
-    at async C:\Users\JOSPHAT MBURU\Desktop\PAIR\index.js:164:30 {
-  data: null,
-  isBoom: true,
-  isServer: false,
-  output: {
-    statusCode: 428,
-    payload: {
-      statusCode: 428,
-      error: 'Precondition Required',
-      message: 'Connection Closed'
-    },
-    headers: {}
-  }
-}
-[2025-07-08T12:38:15.128Z] /pair: Error processing for 254754783683: Failed to request pairing code for 254754783683. Connection Closed
-[2025-07-08T12:38:15.128Z] /pair: Sending error response to client for 254754783683.
-[2025-07-08T12:38:15.129Z] /pair: Triggering cleanup for failed attempt with 254754783683.
-[Cleanup for 254754783683] Attempting cleanup. Session path: C:\Users\JOSPHAT MBURU\Desktop\PAIR\sessions_WHIZ-MD\session-254754783683
-[Cleanup for 254754783683] Closing and nullifying active sockInstance for 254754783683.
-[Cleanup for 254754783683] Error during sockInstance.logout(): Error: Connection Closed
-    at sendRawMessage (C:\Users\JOSPHAT MBURU\Desktop\PAIR\node_modules\@whiskeysockets\baileys\lib\Socket\socket.js:60:19)
-    at sendNode (C:\Users\JOSPHAT MBURU\Desktop\PAIR\node_modules\@whiskeysockets\baileys\lib\Socket\socket.js:79:16)
-    at Object.logout (C:\Users\JOSPHAT MBURU\Desktop\PAIR\node_modules\@whiskeysockets\baileys\lib\Socket\socket.js:347:19)
-    at cleanupSpecificSession (C:\Users\JOSPHAT MBURU\Desktop\PAIR\index.js:41:32)
-    at C:\Users\JOSPHAT MBURU\Desktop\PAIR\index.js:265:15 {
-  data: null,
-  isBoom: true,
-  isServer: false,
-  output: {
-    statusCode: 428,
-    payload: {
-      statusCode: 428,
-      error: 'Precondition Required',
-      message: 'Connection Closed'
-    },
-    headers: {}
-  }
-}
-[Cleanup for 254754783683] Global sockInstance variables reset.
-[Cleanup for 254754783683] Session folder 'C:\Users\JOSPHAT MBURU\Desktop\PAIR\sessions_WHIZ-MD\session-254754783683' deleted.
-[2025-07-08T12:38:15.148Z] /pair: Request for 254754783683 failed and cleanup attempted.
-
