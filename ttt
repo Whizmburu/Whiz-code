@@ -1,93 +1,331 @@
+1 Have two issues
+1. The Error sending welcome message: no message is being sent
+2. No command is working
+3. The bot is displaying my messages, this is bad since security will be low
 
-C:\Users\JOSPHAT MBURU\Desktop\qr>npm install
+The welcome messahes and menu are very important
+The commands too
+Bot should not display rhe status messages or my chats, it should only read the status and activate it, Make sure it marks as read, ie the user can see i viewd their status and React with emojis as discussed
+Microsoft Windows [Version 10.0.26100.4484]
+(c) Microsoft Corporation. All rights reserved.
 
-added 299 packages, and audited 300 packages in 5m
+C:\Users\JOSPHAT MBURU>cd desktop/bot & npm install
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated rimraf@2.7.1: Rimraf versions prior to v4 are no longer supported
+npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+npm warn deprecated har-validator@5.1.5: this library is no longer supported
+npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+npm warn deprecated uuid@3.4.0: Please upgrade  to version 7 or higher.  Older versions may use Math.random() in certain circumstances, which is known to be problematic.  See https://v8.dev/blog/math-random for details.
+npm warn deprecated request@2.88.2: request has been deprecated, see https://github.com/request/request/issues/3142
+npm warn deprecated fstream@1.0.12: This package is no longer supported.
+npm warn deprecated puppeteer@18.2.1: < 22.8.2 is no longer supported
+npm warn deprecated fluent-ffmpeg@2.1.3: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
-64 packages are looking for funding
+added 312 packages, and audited 313 packages in 20m
+
+51 packages are looking for funding
   run `npm fund` for details
 
-found 0 vulnerabilities
+9 vulnerabilities (4 moderate, 5 high)
 
-C:\Users\JOSPHAT MBURU\Desktop\qr>npm start
+To address issues that do not require attention, run:
+  npm audit fix
 
-> whiz-md-qr@1.0.0 start
-> node src/server.js
+To address all issues possible (including breaking changes), run:
+  npm audit fix --force
 
-WHIZ-MD QR Generator server running on http://localhost:3000
-No persistent session file found. Starting fresh.
-Persistent session metadata loaded. Server ready.
-Request for new QR. Generating temporary session ID: qr_737b0b0b0583106d at path: baileys_temp_qr_sessions\qr_737b0b0b0583106d
-Initiating WhatsApp connection for session: qr_737b0b0b0583106d, path: baileys_temp_qr_sessions\qr_737b0b0b0583106d, temporary: true
-QR code received for temporary session qr_737b0b0b0583106d
-QR generated for session qr_737b0b0b0583106d, sending to client.
-Request for new QR. Generating temporary session ID: qr_918ce82cde6f3062 at path: baileys_temp_qr_sessions\qr_918ce82cde6f3062
-Initiating WhatsApp connection for session: qr_918ce82cde6f3062, path: baileys_temp_qr_sessions\qr_918ce82cde6f3062, temporary: true
-QR code received for temporary session qr_918ce82cde6f3062
-QR generated for session qr_918ce82cde6f3062, sending to client.
-Connection closed for session qr_918ce82cde6f3062 (type: QR). Reason: "Stream Errored (restart required)"
-Temporary QR session qr_918ce82cde6f3062 connection closed prematurely or with error. Status: 'closed_early_error'. Reason: Stream Errored (restart required). Cleanup deferred.
-Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
-Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
-Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
-Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
-Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
-Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
-Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
-Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
-Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
-Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
-Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
-QR code received for temporary session qr_737b0b0b0583106d
-Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
-Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
-Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
-Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
-Master timeout for temp QR session qr_737b0b0b0583106d (status: qr_received). Cleaning up as it was not successfully processed.
-Cleaning up session: qr_737b0b0b0583106d at path: baileys_temp_qr_sessions\qr_737b0b0b0583106d
-Socket for session qr_737b0b0b0583106d already closed or not connected, skipping logout.
-Removed auth directory: baileys_temp_qr_sessions\qr_737b0b0b0583106d
-Removed session qr_737b0b0b0583106d from qrSessions map.
-Unknown or unexpected session status for temp session qr_918ce82cde6f3062: closed_early_error
-No session data for qr_737b0b0b0583106d (type: QR) in connection.update. Might be cleaned up.
-Master timeout for temp QR session qr_918ce82cde6f3062 (status: closed_early_error). Cleaning up as it was not successfully processed.
-Cleaning up session: qr_918ce82cde6f3062 at path: baileys_temp_qr_sessions\qr_918ce82cde6f3062
-Socket for session qr_918ce82cde6f3062 already closed or not connected, skipping logout.
-Removed auth directory: baileys_temp_qr_sessions\qr_918ce82cde6f3062
-Removed session qr_918ce82cde6f3062 from qrSessions map.
-No session data for qr_737b0b0b0583106d (type: QR) in connection.update. Might be cleaned up.
-No session data for qr_737b0b0b0583106d (type: QR) in connection.update. Might be cleaned up.
-Request for new QR. Generating temporary session ID: qr_39590dd3d45cd3d4 at path: baileys_temp_qr_sessions\qr_39590dd3d45cd3d4
-Initiating WhatsApp connection for session: qr_39590dd3d45cd3d4, path: baileys_temp_qr_sessions\qr_39590dd3d45cd3d4, temporary: true
-QR code received for temporary session qr_39590dd3d45cd3d4
-QR generated for session qr_39590dd3d45cd3d4, sending to client.
-Connection closed for session qr_39590dd3d45cd3d4 (type: QR). Reason: "Stream Errored (restart required)"
-Temporary QR session qr_39590dd3d45cd3d4 connection closed prematurely or with error. Status: 'closed_early_error'. Reason: Stream Errored (restart required). Cleanup deferred.
-Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
-Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
-No session data for qr_737b0b0b0583106d (type: QR) in connection.update. Might be cleaned up.
-Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
-Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
-Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
-Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
-Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
-Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
-No session data for qr_737b0b0b0583106d (type: QR) in connection.update. Might be cleaned up.
-Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
-Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
-Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
-Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
-Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
-Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
-Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
-Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
-Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
-Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
-Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
-Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
-Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
-Unknown or unexpected session status for temp session qr_39590dd3d45cd3d4: closed_early_error
-Master timeout for temp QR session qr_39590dd3d45cd3d4 (status: closed_early_error). Cleaning up as it was not successfully processed.
-Cleaning up session: qr_39590dd3d45cd3d4 at path: baileys_temp_qr_sessions\qr_39590dd3d45cd3d4
-Socket for session qr_39590dd3d45cd3d4 already closed or not connected, skipping logout.
-Removed auth directory: baileys_temp_qr_sessions\qr_39590dd3d45cd3d4
-Removed session qr_39590dd3d45cd3d4 from qrSessions map.
+Some issues need review, and may require choosing
+a different dependency.
+
+Run `npm audit` for details.
+
+C:\Users\JOSPHAT MBURU\Desktop\bot>npm start
+
+> app@1.0.0 start
+> node bot.js
+
+[dotenv@17.1.0] injecting env (0) from .env (tip: 🔐 encrypt with dotenvx: https://dotenvx.com)
+WHIZ-MD Bot Starting...
+🔴 Error: WHIZ-MD session ID not found.
+Please set an environment variable starting with 'WHIZMD_' with your session ID.
+You can get a session ID from: https://whizmdsessions.onrender.com
+
+C:\Users\JOSPHAT MBURU\Desktop\bot>npm start
+
+> app@1.0.0 start
+> node bot.js
+
+[dotenv@17.1.0] injecting env (4) from .env (tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild)
+WHIZ-MD Bot Starting...
+Found session ID: YOUR_SESSION_ID_STRING_HERE from env var WHIZMD_SESSION_UNIQUEKEY
+[COMMAND_HANDLER] Loaded 81 commands with 75 aliases. Total map size: 156.
+Attempting to initialize WHIZ-MD client...
+(node:11588) Warning: Accessing non-existent property 'commands' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+Error during client initialization: TimeoutError: Timed out after 30000 ms while trying to connect to the browser! Only Chrome at revision r1045629 is guaranteed to work.
+    at Timeout.onTimeout (C:\Users\JOSPHAT MBURU\Desktop\bot\node_modules\puppeteer-core\lib\cjs\puppeteer\node\BrowserRunner.js:310:20)
+    at listOnTimeout (node:internal/timers:588:17)
+    at process.processTimers (node:internal/timers:523:7)
+
+C:\Users\JOSPHAT MBURU\Desktop\bot>npm start
+
+> app@1.0.0 start
+> node bot.js
+
+[dotenv@17.1.0] injecting env (4) from .env (tip: ⚙️  override existing env vars with { override: true })
+WHIZ-MD Bot Starting...
+Found session ID: YOUR_SESSION_ID_STRING_HERE from env var WHIZMD_SESSION_UNIQUEKEY
+[COMMAND_HANDLER] Loaded 81 commands with 75 aliases. Total map size: 156.
+Attempting to initialize WHIZ-MD client...
+(node:7432) Warning: Accessing non-existent property 'commands' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+█ ▄▄▄▄▄ █▄▄▀▄██ ▀▀ ▄▄█▀█▄▄▄█ ▄   █ ▀█▄ █▄▀▄ █▀ ▄ ██ ▄▄▄▄▄ █
+█ █   █ █ ▄█ ▀▀█▄▄▀▀▄█▄█▀  █▄██ █▄█▀█ ▄▀▄▄█▄▀█▀▄ ██ █   █ █
+█ █▄▄▄█ █▄▀ ▄▄█ ▀▀▄█ ▀█▄ █▀ ▄▄▄ ▀███▄█▄ ▄  ▀██▄▀▄██ █▄▄▄█ █
+█▄▄▄▄▄▄▄█▄█▄█▄▀ █▄▀▄▀▄▀ ▀▄█ █▄█ ▀ ▀ █ ▀ █ ▀▄▀▄█▄█ █▄▄▄▄▄▄▄█
+█   ▄▀▀▄█▄█▄▄ ▀▀██▄▀▀█▄▄█ ▀▄ ▄   █ ▄▀█▀█ ▄▀ ▄▀▄█  ▄██▄▄ ▀ █
+█▀▀█▀█ ▄▀▄   ▀ ▀▀  ██ ▄▄█▄█▄█   ▀ █▄▄█▀▄█ █ █▄ ▀   ▀█▀ ▄█ █
+█▄ ▄█▀█▄▀ ▀  █▄  ██▄▄ █▄▄▄▄██▀█▀ ▀▀▄  ▀ ▀█ ▄ ▀██▄█▀ ▀█▀▄ ▄█
+█▄█▄▀██▄█▄▀█ ▀▄█▀▀▀██▀▄ ▄█ ▄▀████  ▀█▀█▄▄▄▄▄▀▀▄█ ▀▄▀▄  ▀▀██
+██ ▀▀ ▄▄ ▄▄ ▀  ▄▄  ▀▄█▀██▄▄█▄▄▄█▄ █▀███▄▄█ ▄  █ ▀▄▄▄▀▀ ██▀█
+█ ▄▄▄  ▄▄ ██▀ ▀▀▀▄█▀ ▀▀▀█▀▀▀█  ▀█▀▀ █▀███▄ █ ▀  ███ ▄▄▄█▀▀█
+███ █▀█▄█▄ █▄  ██ ▄▀██  ▀█ ▀▄▄▄▀▀█▄█▀▀▀█▄▄▀ █▀█▄▄  ▄▄▄▀▀▀▀█
+█▄▄▀▄▀▀▄▄▀█   ▄▀▀▄▀▄ ▄█▀  █▀▀ █▄ █ ██ ▄▄█ █▄█▀▀ ▀█▀█▄ ▀▄█ █
+█ ▄█▄█▀▄▄▀▀▄▄▀█▄ ▄ ▄█ ▀█▄███▀█▄█▄▄▄█ ▄▀ ▀▀██ ▀███▄▄▀██▀█▄▄█
+██▀ ▀ ▄▄▄ ▄   ▀▄▀▀▄▄▀▀█▄█▄  ▄▄▄ █  ██ █▄▀█▀ ▄ ███ ▄▄▄ ▀▀███
+█▀▄ █ █▄█  ▄▄▀▀▄  █▄██▀▀▀▄█ █▄█  ▄▀ ▀▀██▄▀ █      █▄█ █████
+██▄ ▀ ▄▄ ▄ ▀▄█▄▄ ▄ ▄ ▀██▀▀  ▄▄▄ ▀█▀ █▄██▄█▀█▄█▀ ▄  ▄▄▄▄█ ▀█
+██▄█▄▀▀▄ █ █▀   █▄▄█▀█  ▀▀██▄▄▀▀ ▀ ▄ ▀▀█▄▄▄ ██▄██▀▀ ▄█▀▄▀▀█
+██▀▀██▀▄█ █  ▄▀█▀▀█▀▄▄▀█▀▄▄▀▄▄ █ ▀█ ▄▄▄█▀ ▀▄▄█ ▄█▀▄  ▀ █▀▄█
+█ ▀ ▀█▄▄█▀▀▀▄▀▀████ ▀██▀ ▄▄▄███ ▄██▄▄▄▀▀▀█▄▄ █ ██ ▄  ▄▄▀███
+█▀█▄ ▀▀▄██▀ ▄    ▄ █  ▀█▄▀▄▄ ▄ ▀ █ █▀▄▀▄ ▀▀▀▄█▄ █▄▀▀▄▀▀ █▄█
+█▀█ ██ ▄▀▀██▄██▀▀▀▀█ █▄█ █▀ ▀ ▄▀█▄▄▀▀▀██ █▀▄    ▄▄▀█▀▀▄ █ █
+█▀▄█▄▄▄▄ ▄▀▄ ▀▄█▄▀█▄▄ █ ▀████▄  ▀▀▄█▄▀▀█  ▀▀ █▄▄▀▀▀█▀███▀██
+█ ▀▄ ▀▄▄▄ █▄   ▄██▀▀█▄ █ ▀█ ▄▄ █▀██▄ █▀▄ ▄▀ █▀▀▄█▄▀█▄▄▄█▀▀█
+█ ▀ ▀▀▄▄▄▀ ▀▀█ ▀ ▄ ▄▄█▀▀▄▄▀█▄██▀▀▄▀▄ ▀▄▄ █▄▄ █▄▄█  ▄▀█ ▄▀▄█
+███████▄█▀ ▄▄█ ▀ █▄   ▀▀▄▄▄ ▄▄▄ ▄█ █▄▄ ▀▄██▄ ▀ ██ ▄▄▄ ▀▀ ▀█
+█ ▄▄▄▄▄ ██▄  ▄▀▀ ▄▀ ▀█▀█▄██ █▄█ ▄  ▄ ▀██   █ ▄▀██ █▄█ ▀▀▀██
+█ █   █ █▀██▄█▄▀▀███ ▄ ▀ ▀ ▄▄▄     ▀▀▀▀▄ █▀▄   ▀▄▄▄▄ ▄██▀██
+█ █▄▄▄█ █ ▄▄ ▄▄▀    ▄▀  █▀▀▀▀██▀▄▀▀ ▀   ▄█ ▄▀█  ▄  ▀▀████▀█
+█▄▄▄▄▄▄▄█▄▄█▄██▄▄████▄▄▄▄███▄▄███▄██▄█▄▄▄▄▄█▄█▄█▄█▄██▄█████
+
+QR code generated. Scan it with WhatsApp.
+WHIZ-MD Bot is ready!
+Logged in as 𓅓𝙒𝞖𝞘𝙕𓅓 (254754783683)
+Error sending welcome message: Error: Cannot find module 'C:\Users\JOSPHAT MBURU\Desktop\package.json'
+Require stack:
+- C:\Users\JOSPHAT MBURU\Desktop\bot\commands\help.js
+- C:\Users\JOSPHAT MBURU\Desktop\bot\utils\commandHandler.js
+- C:\Users\JOSPHAT MBURU\Desktop\bot\bot.js
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1401:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
+    at Function._load (node:internal/modules/cjs/loader:1211:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.require (node:internal/modules/cjs/loader:1487:12)
+    at require (node:internal/modules/helpers:135:16)
+    at getFullMenuTextInternal (C:\Users\JOSPHAT MBURU\Desktop\bot\commands\help.js:10:19)
+    at Client.<anonymous> (C:\Users\JOSPHAT MBURU\Desktop\bot\bot.js:84:39)
+    at Client.emit (node:events:518:28)
+    at C:\Users\JOSPHAT MBURU\Desktop\bot\node_modules\whatsapp-web.js\src\Client.js:234:18
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async CDPPage._CDPPage_onBindingCalled (C:\Users\JOSPHAT MBURU\Desktop\bot\node_modules\puppeteer-core\lib\cjs\puppeteer\common\Page.js:2462:24) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\JOSPHAT MBURU\\Desktop\\bot\\commands\\help.js',
+    'C:\\Users\\JOSPHAT MBURU\\Desktop\\bot\\utils\\commandHandler.js',
+    'C:\\Users\\JOSPHAT MBURU\\Desktop\\bot\\bot.js'
+  ]
+}
+[BOT.JS] Received message from: status@broadcast, author: 233535829472@c.us, body: "Hustle boy😇"
+[BOT.JS] Received message event. From: status@broadcast, Author: 233535829472@c.us, Type: video, Body: "Hustle boy😇"
+[BOT.JS] Detected status update from author: 233535829472@c.us. Body: Hustle boy😇, Type: video
+[BOT.JS] Received message from: status@broadcast, author: 254732363964@c.us, body: "Ata na back 5 sai hutoboi 🥷"
+[BOT.JS] Received message event. From: status@broadcast, Author: 254732363964@c.us, Type: video, Body: "Ata na back 5 sai hutoboi 🥷"
+[BOT.JS] Detected status update from author: 254732363964@c.us. Body: Ata na back 5 sai hutoboi 🥷, Type: video
+[BOT.JS] Received message from: status@broadcast, author: 254703605266@c.us, body: "😹turasta"
+[BOT.JS] Received message event. From: status@broadcast, Author: 254703605266@c.us, Type: video, Body: "😹turasta"
+[BOT.JS] Detected status update from author: 254703605266@c.us. Body: 😹turasta, Type: video
+[BOT.JS] Received message from: status@broadcast, author: 233535829472@c.us, body: "😇"
+[BOT.JS] Received message event. From: status@broadcast, Author: 233535829472@c.us, Type: video, Body: "😇"
+[BOT.JS] Detected status update from author: 233535829472@c.us. Body: 😇, Type: video
+[BOT.JS] Received message from: status@broadcast, author: 233545927383@c.us, body: "Maku no awie 🙄🙄🔫🔫🫩🫩"
+[BOT.JS] Received message event. From: status@broadcast, Author: 233545927383@c.us, Type: image, Body: "Maku no awie 🙄🙄🔫🔫🫩🫩"
+[BOT.JS] Detected status update from author: 233545927383@c.us. Body: Maku no awie 🙄🙄🔫🔫🫩🫩, Type: image
+[BOT.JS] Received message from: status@broadcast, author: 233541227400@c.us, body: "Contact us now to boost all your social media platforms (Followers, Likes, Comments, Shares, Views, Subscribers etc..)"
+[BOT.JS] Received message event. From: status@broadcast, Author: 233541227400@c.us, Type: chat, Body: "Contact us now to boost all your social media platforms (Followers, Likes, Comments, Shares, Views, Subscribers etc..)"
+[BOT.JS] Detected status update from author: 233541227400@c.us. Body: Contact us now to boost all your social media platforms (Followers, Likes, Comments, Shares, Views, Subscribers etc..), Type: chat
+[BOT.JS] Received message from: status@broadcast, author: 254748668510@c.us, body: "😂😂😂"
+[BOT.JS] Received message event. From: status@broadcast, Author: 254748668510@c.us, Type: image, Body: "😂😂😂"
+[BOT.JS] Detected status update from author: 254748668510@c.us. Body: 😂😂😂, Type: image
+[BOT.JS] Received message from: status@broadcast, author: 233554712972@c.us, body: "🙃"
+[BOT.JS] Received message event. From: status@broadcast, Author: 233554712972@c.us, Type: image, Body: "🙃"
+[BOT.JS] Detected status update from author: 233554712972@c.us. Body: 🙃, Type: image
+[BOT.JS] Received message from: status@broadcast, author: 233547256429@c.us, body: "🌞"
+[BOT.JS] Received message event. From: status@broadcast, Author: 233547256429@c.us, Type: video, Body: "🌞"
+[BOT.JS] Detected status update from author: 233547256429@c.us. Body: 🌞, Type: video
+[BOT.JS] Received message from: status@broadcast, author: 233554712972@c.us, body: "😎"
+[BOT.JS] Received message event. From: status@broadcast, Author: 233554712972@c.us, Type: image, Body: "😎"
+[BOT.JS] Detected status update from author: 233554712972@c.us. Body: 😎, Type: image
+[BOT.JS] Received message from: status@broadcast, author: 233598718851@c.us, body: "🫂💕"
+[BOT.JS] Received message event. From: status@broadcast, Author: 233598718851@c.us, Type: video, Body: "🫂💕"
+[BOT.JS] Detected status update from author: 233598718851@c.us. Body: 🫂💕, Type: video
+[BOT.JS] Received message from: status@broadcast, author: 233207415469@c.us, body: "Aba 😂😂😂💔"
+[BOT.JS] Received message event. From: status@broadcast, Author: 233207415469@c.us, Type: image, Body: "Aba 😂😂😂💔"
+[BOT.JS] Detected status update from author: 233207415469@c.us. Body: Aba 😂😂😂💔, Type: image
+[BOT.JS] Received message from: status@broadcast, author: 254726090372@c.us, body: ""
+[BOT.JS] Received message event. From: status@broadcast, Author: 254726090372@c.us, Type: image, Body: ""
+[BOT.JS] Detected status update from author: 254726090372@c.us. Body: , Type: image
+[BOT.JS] Received message from: status@broadcast, author: 263714388643@c.us, body: ""
+[BOT.JS] Received message event. From: status@broadcast, Author: 263714388643@c.us, Type: image, Body: ""
+[BOT.JS] Detected status update from author: 263714388643@c.us. Body: , Type: image
+[BOT.JS] Received message from: status@broadcast, author: 254712451910@c.us, body: "😂😂🤝"
+[BOT.JS] Received message event. From: status@broadcast, Author: 254712451910@c.us, Type: video, Body: "😂😂🤝"
+[BOT.JS] Detected status update from author: 254712451910@c.us. Body: 😂😂🤝, Type: video
+[BOT.JS] Received message from: status@broadcast, author: 254798611895@c.us, body: "🫴"
+[BOT.JS] Received message event. From: status@broadcast, Author: 254798611895@c.us, Type: image, Body: "🫴"
+[BOT.JS] Detected status update from author: 254798611895@c.us. Body: 🫴, Type: image
+[BOT.JS] Received message from: status@broadcast, author: 254798611895@c.us, body: "📌"
+[BOT.JS] Received message event. From: status@broadcast, Author: 254798611895@c.us, Type: video, Body: "📌"
+[BOT.JS] Detected status update from author: 254798611895@c.us. Body: 📌, Type: video
+[BOT.JS] Received message from: status@broadcast, author: 233594213526@c.us, body: "Simple"
+[BOT.JS] Received message event. From: status@broadcast, Author: 233594213526@c.us, Type: image, Body: "Simple"
+[BOT.JS] Detected status update from author: 233594213526@c.us. Body: Simple, Type: image
+[BOT.JS] Received message from: status@broadcast, author: 254748668510@c.us, body: "Dusted1😂"
+[BOT.JS] Received message event. From: status@broadcast, Author: 254748668510@c.us, Type: chat, Body: "Dusted1😂"
+[BOT.JS] Detected status update from author: 254748668510@c.us. Body: Dusted1😂, Type: chat
+[BOT.JS] Received message from: status@broadcast, author: 233549635280@c.us, body: ""
+[BOT.JS] Received message event. From: status@broadcast, Author: 233549635280@c.us, Type: image, Body: ""
+[BOT.JS] Detected status update from author: 233549635280@c.us. Body: , Type: image
+[BOT.JS] Received message from: status@broadcast, author: 233549635280@c.us, body: ""
+[BOT.JS] Received message event. From: status@broadcast, Author: 233549635280@c.us, Type: image, Body: ""
+[BOT.JS] Detected status update from author: 233549635280@c.us. Body: , Type: image
+[BOT.JS] Received message from: status@broadcast, author: 233549635280@c.us, body: ""
+[BOT.JS] Received message event. From: status@broadcast, Author: 233549635280@c.us, Type: image, Body: ""
+[BOT.JS] Detected status update from author: 233549635280@c.us. Body: , Type: image
+[BOT.JS] Received message from: status@broadcast, author: 233549635280@c.us, body: ""
+[BOT.JS] Received message event. From: status@broadcast, Author: 233549635280@c.us, Type: image, Body: ""
+[BOT.JS] Detected status update from author: 233549635280@c.us. Body: , Type: image
+[BOT.JS] Received message from: status@broadcast, author: 233549635280@c.us, body: ""
+[BOT.JS] Received message event. From: status@broadcast, Author: 233549635280@c.us, Type: image, Body: ""
+[BOT.JS] Detected status update from author: 233549635280@c.us. Body: , Type: image
+[BOT.JS] Received message from: status@broadcast, author: 254758026303@c.us, body: "😂😂mmeskia"
+[BOT.JS] Received message event. From: status@broadcast, Author: 254758026303@c.us, Type: video, Body: "😂😂mmeskia"
+[BOT.JS] Detected status update from author: 254758026303@c.us. Body: 😂😂mmeskia, Type: video
+[BOT.JS] Received message from: status@broadcast, author: 254758026303@c.us, body: ""
+[BOT.JS] Received message event. From: status@broadcast, Author: 254758026303@c.us, Type: video, Body: ""
+[BOT.JS] Detected status update from author: 254758026303@c.us. Body: , Type: video
+[BOT.JS] Received message from: status@broadcast, author: 256754595969@c.us, body: "iPhone 11 Pro
+256 Storage
+No Face ID
+@700k"
+[BOT.JS] Received message event. From: status@broadcast, Author: 256754595969@c.us, Type: image, Body: "iPhone 11 Pro
+256 Storage
+No Face ID
+@700k"
+[BOT.JS] Detected status update from author: 256754595969@c.us. Body: iPhone 11 Pro
+256 Storage
+No Face ID
+@700k, Type: image
+[BOT.JS] Received message from: status@broadcast, author: 233555668474@c.us, body: ""
+[BOT.JS] Received message event. From: status@broadcast, Author: 233555668474@c.us, Type: image, Body: ""
+[BOT.JS] Detected status update from author: 233555668474@c.us. Body: , Type: image
+[BOT.JS] Received message from: status@broadcast, author: 233555668474@c.us, body: "Active ✅✅"
+[BOT.JS] Received message event. From: status@broadcast, Author: 233555668474@c.us, Type: image, Body: "Active ✅✅"
+[BOT.JS] Detected status update from author: 233555668474@c.us. Body: Active ✅✅, Type: image
+[BOT.JS] Received message from: status@broadcast, author: 254758026303@c.us, body: "🤣🤣 zero comeback"
+[BOT.JS] Received message event. From: status@broadcast, Author: 254758026303@c.us, Type: video, Body: "🤣🤣 zero comeback"
+[BOT.JS] Detected status update from author: 254758026303@c.us. Body: 🤣🤣 zero comeback, Type: video
+[BOT.JS] Received message from: status@broadcast, author: 2348117449587@c.us, body: "Shogbo oo👌"
+[BOT.JS] Received message event. From: status@broadcast, Author: 2348117449587@c.us, Type: image, Body: "Shogbo oo👌"
+[BOT.JS] Detected status update from author: 2348117449587@c.us. Body: Shogbo oo👌, Type: image
+[BOT.JS] Received message from: status@broadcast, author: 256754595969@c.us, body: "Cash this iPhone 12 Pro
+Storage 128 GB
+NO FACE ID
+@850K"
+[BOT.JS] Received message event. From: status@broadcast, Author: 256754595969@c.us, Type: image, Body: "Cash this iPhone 12 Pro
+Storage 128 GB
+NO FACE ID
+@850K"
+[BOT.JS] Detected status update from author: 256754595969@c.us. Body: Cash this iPhone 12 Pro
+Storage 128 GB
+NO FACE ID
+@850K, Type: image
+[BOT.JS] Received message from: status@broadcast, author: 254798585350@c.us, body: ".....kijana yako🫴🏻🫴🏻🥱"
+[BOT.JS] Message starts with prefix, attempting to handle command.
+[COMMAND_HANDLER] handleMessage called with body: ".....kijana yako🫴🏻🫴🏻🥱"
+[COMMAND_HANDLER] Command not found for: "....kijana" (Full map size: 156)
+[BOT.JS] Received message event. From: status@broadcast, Author: 254798585350@c.us, Type: video, Body: ".....kijana yako🫴🏻🫴🏻🥱"
+[BOT.JS] Detected status update from author: 254798585350@c.us. Body: .....kijana yako🫴🏻🫴🏻🥱, Type: video
+[BOT.JS] Received message from: status@broadcast, author: 233555668474@c.us, body: "*Become an agent and be your own boss in data selling ✅*"
+[BOT.JS] Received message event. From: status@broadcast, Author: 233555668474@c.us, Type: image, Body: "*Become an agent and be your own boss in data selling ✅*"
+[BOT.JS] Detected status update from author: 233555668474@c.us. Body: *Become an agent and be your own boss in data selling ✅*, Type: image
+[BOT.JS] Received message from: status@broadcast, author: 254798585350@c.us, body: "🤩🤩"
+[BOT.JS] Received message event. From: status@broadcast, Author: 254798585350@c.us, Type: image, Body: "🤩🤩"
+[BOT.JS] Detected status update from author: 254798585350@c.us. Body: 🤩🤩, Type: image
+[BOT.JS] Received message from: status@broadcast, author: 233555668474@c.us, body: "Active ✅….. *bring all your boosting work here*"
+[BOT.JS] Received message event. From: status@broadcast, Author: 233555668474@c.us, Type: image, Body: "Active ✅….. *bring all your boosting work here*"
+[BOT.JS] Detected status update from author: 233555668474@c.us. Body: Active ✅….. *bring all your boosting work here*, Type: image
+[BOT.JS] Received message from: status@broadcast, author: 254758026303@c.us, body: ""
+[BOT.JS] Received message event. From: status@broadcast, Author: 254758026303@c.us, Type: video, Body: ""
+[BOT.JS] Detected status update from author: 254758026303@c.us. Body: , Type: video
+[BOT.JS] Received message from: status@broadcast, author: 233594213526@c.us, body: "Waiting  😹"
+[BOT.JS] Received message event. From: status@broadcast, Author: 233594213526@c.us, Type: image, Body: "Waiting  😹"
+[BOT.JS] Detected status update from author: 233594213526@c.us. Body: Waiting  😹, Type: image
+[BOT.JS] Received message from: status@broadcast, author: 254726090372@c.us, body: "Siet 😩"
+[BOT.JS] Received message event. From: status@broadcast, Author: 254726090372@c.us, Type: image, Body: "Siet 😩"
+[BOT.JS] Detected status update from author: 254726090372@c.us. Body: Siet 😩, Type: image
+[BOT.JS] Received message from: status@broadcast, author: 233547256429@c.us, body: "there is a new job in town by MAHAMA
+⏭️⏭️⏭️"
+[BOT.JS] Received message event. From: status@broadcast, Author: 233547256429@c.us, Type: chat, Body: "there is a new job in town by MAHAMA
+⏭️⏭️⏭️"
+[BOT.JS] Detected status update from author: 233547256429@c.us. Body: there is a new job in town by MAHAMA
+⏭️⏭️⏭️, Type: chat
+[BOT.JS] Received message from: status@broadcast, author: 233547256429@c.us, body: "just tell them and get paid, falaa job🤣😀"
+[BOT.JS] Received message event. From: status@broadcast, Author: 233547256429@c.us, Type: image, Body: "just tell them and get paid, falaa job🤣😀"
+[BOT.JS] Detected status update from author: 233547256429@c.us. Body: just tell them and get paid, falaa job🤣😀, Type: image
+[BOT.JS] Received message from: status@broadcast, author: 254758026303@c.us, body: ""
+[BOT.JS] Received message event. From: status@broadcast, Author: 254758026303@c.us, Type: video, Body: ""
+[BOT.JS] Detected status update from author: 254758026303@c.us. Body: , Type: video
+[BOT.JS] Received message from: status@broadcast, author: 233594213526@c.us, body: "😎"
+[BOT.JS] Received message event. From: status@broadcast, Author: 233594213526@c.us, Type: image, Body: "😎"
+[BOT.JS] Detected status update from author: 233594213526@c.us. Body: 😎, Type: image
+[BOT.JS] Received message from: status@broadcast, author: 254726090372@c.us, body: "💀"
+[BOT.JS] Received message event. From: status@broadcast, Author: 254726090372@c.us, Type: image, Body: "💀"
+[BOT.JS] Detected status update from author: 254726090372@c.us. Body: 💀, Type: image
+[BOT.JS] Received message from: status@broadcast, author: 254726090372@c.us, body: ""
+[BOT.JS] Received message event. From: status@broadcast, Author: 254726090372@c.us, Type: image, Body: ""
+[BOT.JS] Detected status update from author: 254726090372@c.us. Body: , Type: image
+[BOT.JS] Received message from: status@broadcast, author: 254740841168@c.us, body: "*❀━【 💎* _*WHIZ‑MD BOT MENU*_ *╮*
+
+*❀* *Owner* : WHIZ
+*❀* *Mode* : Public
+*❀* *Prefix* : .*
+*❀* *Commands* : 17 (Loaded) / 119 (Planned)
+*❀* *Version* : 1.0.0
+*❀* *Repo* : github.com/whizmburu/WHIZ‑MD
+*❀━━━━━━━━━━━━━╯*"
+[BOT.JS] Received message event. From: status@broadcast, Author: 254740841168@c.us, Type: chat, Body: "*❀━【 💎* _*WHIZ‑MD BOT MENU*_ *╮*
+
+*❀* *Owner* : WHIZ
+*❀* *Mode* : Public
+*❀* *Prefix* : .*
+*❀* *Commands* : 17 (Loaded) / 119 (Planned)
+*❀* *Version* : 1.0.0
+*❀* *Repo* : github.com/whizmburu/WHIZ‑MD
+*❀━━━━━━━━━━━━━╯*"
+[BOT.JS] Detected status update from author: 254740841168@c.us. Body: *❀━【 💎* _*WHIZ‑MD BOT MENU*_ *╮*
+
+*❀* *Owner* : WHIZ
+*❀* *Mode* : Public
+*❀* *Prefix* : .*
+*❀* *Commands* : 17 (Loaded) / 119 (Planned)
+*❀* *Version* : 1.0.0
+*❀* *Repo* : github.com/whizmburu/WHIZ‑MD
+*❀━━━━━━━━━━━━━╯*, Type: chat
+[BOT.JS] Received message from: 254740841168@c.us, author: N/A, body: "Hey"
+[BOT.JS] Received message event. From: 254740841168@c.us, Author: N/A, Type: chat, Body: "Hey"
+[BOT.JS] Received message from: 254740841168@c.us, author: N/A, body: "Dude"
+[BOT.JS] Received message event. From: 254740841168@c.us, Author: N/A, Type: chat, Body: "Dude
