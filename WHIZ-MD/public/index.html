@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WHIZ-MD WhatsApp Pairing</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+        h1 {
+            color: #128C7E; /* WhatsApp Green */
+            margin-bottom: 25px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            text-align: left;
+        }
+        input[type="tel"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #25D366; /* WhatsApp Green */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #1DA851;
+        }
+        button:disabled {
+            background-color: #9e9e9e;
+            cursor: not-allowed;
+        }
+        #pairing-code-area {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #e8f5e9; /* Light green background */
+            border: 1px solid #a5d6a7; /* Green border */
+            border-radius: 4px;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #pairing-code {
+            font-size: 28px;
+            font-weight: bold;
+            color: #00796b; /* Darker green */
+            letter-spacing: 2px;
+        }
+        .status-message {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        .error {
+            color: #d32f2f; /* Red */
+        }
+        .success {
+            color: #388e3c; /* Green */
+        }
+        .info {
+            color: #1976d2; /* Blue */
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #777;
+        }
+        .footer a {
+            color: #128C7E;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>WHIZ-MD Pairing</h1>
+
+        <label for="phone-number">Phone Number (with country code):</label>
+        <input type="tel" id="phone-number" name="phone-number" placeholder="e.g., 2547XXXXXXXX">
+
+        <button id="get-pairing-code-btn">Get Pairing Code</button>
+        <button id="next-number-btn" style="background-color: #075E54; margin-left: 10px;">Next Number</button>
+
+        <div id="pairing-code-area">
+            <span id="pairing-code"></span>
+        </div>
+        <div id="status-message" class="status-message"></div>
+         <div id="session-status-message" class="status-message success"></div>
+    </div>
+
+    <div class="footer">
+        Powered by <a href="https://github.com/whizmburu/WHIZ-MD" target="_blank">WHIZ-MD</a>
+    </div>
+
+    <script src="/script.js"></script>
+</body>
+</html>
