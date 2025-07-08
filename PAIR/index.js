@@ -81,8 +81,7 @@ async function connectToWhatsApp(phoneNumber, res) {
             const formattedNumber = phoneNumber.replace(/[^0-9]/g, '');
             console.log(chalk.yellow(`Requesting pairing code for: ${formattedNumber}`));
             try {
-                // Wait a bit for the socket to be ready before requesting pairing code
-                await new Promise(resolve => setTimeout(resolve, 2000)); // 2s delay
+                // Removed artificial delay: await new Promise(resolve => setTimeout(resolve, 2000));
                 const code = await sockInstance.requestPairingCode(formattedNumber);
                 console.log(chalk.green(`Pairing Code for ${formattedNumber}: ${code}`));
                 resolve(code); // Resolve promise with the pairing code
