@@ -1,0 +1,19 @@
+Error, not connecting the qr
+C:\Users\JOSPHAT MBURU\Desktop\qr>npm start
+
+> whiz-md-qr@1.0.0 start
+> node src/server.js
+
+WHIZ-MD QR Generator server running on http://localhost:3000
+No persistent session file found. Starting fresh.
+Persistent session metadata loaded. Server ready.
+Request for new QR. Generating temporary session ID: qr_8f9bb0088bdddcb8 at path: baileys_temp_qr_sessions\qr_8f9bb0088bdddcb8
+Initiating WhatsApp connection for session: qr_8f9bb0088bdddcb8, path: baileys_temp_qr_sessions\qr_8f9bb0088bdddcb8, temporary: true
+QR code received for temporary session qr_8f9bb0088bdddcb8
+QR generated for session qr_8f9bb0088bdddcb8, sending to client.
+Connection closed for session qr_8f9bb0088bdddcb8 (type: QR). Error: Stream Errored (restart required)
+Cleaning up temporary QR session qr_8f9bb0088bdddcb8 (status: qr_received) due to close before successful transition/report.
+Cleaning up session: qr_8f9bb0088bdddcb8 at path: baileys_temp_qr_sessions\qr_8f9bb0088bdddcb8
+Socket for session qr_8f9bb0088bdddcb8 already closed or not connected, skipping logout.
+Removed auth directory: baileys_temp_qr_sessions\qr_8f9bb0088bdddcb8
+Removed session qr_8f9bb0088bdddcb8 from qrSessions map.
