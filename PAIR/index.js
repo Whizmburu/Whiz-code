@@ -56,14 +56,12 @@ async function connectToWhatsApp(phoneNumber, res) {
     const sessionID = `session-${phoneNumber}`; // Unique session ID based on phone number
     const currentSessionPath = path.join(SESSIONS_DIR, sessionID);
 
-    // Clean up any previous session for this specific number or any lingering global session
+    // Clean up any previous session for this specific number.
+    // Note: cleanupSession also handles closing/nullifying the global sockInstance if it was for this path.
     await cleanupSession(currentSessionPath);
-    // Also clean up the default session folder if it exists from previous versions
-    const oldDefaultSessionPath = path.join(__dirname, config.session_folder_name);
-    if (fs.existsSync(oldDefaultSessionPath) && oldDefaultSessionPath !== SESSIONS_DIR) { // ensure not deleting parent
-      await fs.remove(oldDefaultSessionPath).catch(e => console.error("Error removing old default session:", e));
-    }
 
+    // The main SESSIONS_DIR is created at startup.
+    // oldDefaultSessionPath logic removed as it's redundant with the new structure.
 
     if (!fs.existsSync(currentSessionPath)) {
         fs.mkdirSync(currentSessionPath, { recursive: true });

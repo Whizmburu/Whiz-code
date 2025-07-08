@@ -1,0 +1,11 @@
+# Dependencies
+/node_modules/
+
+# Session data
+/sessions_WHIZ-MD/
+
+# Logs (if any are generated at this level)
+*.log
+
+# Baileys store file (if created, though current index.js doesn't explicitly place one here)
+baileys_store.json
